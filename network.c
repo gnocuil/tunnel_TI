@@ -11,12 +11,10 @@
 
 unsigned mtu;
 
-Encap *encap = NULL;
-
 int set_mtu(char *interface_name, unsigned mtu) {
 	int fd;
 	if ((fd = socket(PF_INET,SOCK_STREAM,0)) < 0) {
-		fprintf(stderr, "set_mtu: Error create socket: %m\n", errno);
+		fprintf(stderr, "set_mtu: Error create socket:\n");
 		return -1;
 	}
 
@@ -25,7 +23,7 @@ int set_mtu(char *interface_name, unsigned mtu) {
 	ifr.ifr_mtu = mtu;
 
 	if(ioctl(fd, SIOCSIFMTU, &ifr) < 0) {
-		fprintf(stderr, "set_mtu: Error set %s mtu: %m\n",interface_name, errno);
+		fprintf(stderr, "set_mtu: Error set %s mtu:\n",interface_name);
 		return -1;
 	}
 	fprintf(stderr, "MTU of %s: %d\n", interface_name, mtu);
@@ -36,7 +34,7 @@ int interface_up(char *interface_name)
 {
 	int s;
 	if((s = socket(PF_INET,SOCK_STREAM,0)) < 0) {
-		fprintf(stderr, "interface_up: Error create socket: %m\n", errno);
+		fprintf(stderr, "interface_up: Error create socket: \n");
 		return -1;
 	}
 	struct ifreq ifr;
@@ -45,12 +43,12 @@ int interface_up(char *interface_name)
 	short flag;
 	flag = IFF_UP;
 	if(ioctl(s, SIOCGIFFLAGS, &ifr) < 0) {
-		fprintf(stderr, "interface_up: Error getting flags: %m\n",interface_name, errno);
+		fprintf(stderr, "interface_up: Error getting flags: %s\n",interface_name);
 		return -1;
 	}
 	ifr.ifr_ifru.ifru_flags |= flag;
 	if(ioctl(s, SIOCSIFFLAGS, &ifr) < 0) {
-		fprintf(stderr, "interface_up: Error setting flags: %m\n",interface_name, errno);
+		fprintf(stderr, "interface_up: Error setting flags:%s\n",interface_name);
 		return -1;
 	}
 	return 0;
